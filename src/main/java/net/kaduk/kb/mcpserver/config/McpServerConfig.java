@@ -16,7 +16,8 @@ import io.modelcontextprotocol.server.transport.StdioServerTransport;
 import io.modelcontextprotocol.server.transport.WebFluxSseServerTransport;
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.ServerMcpTransport;
-import net.kaduk.kb.mcpserver.server.WeatherApiClient;
+import net.kaduk.kb.mcpserver.server.DBpediaService;
+import net.kaduk.kb.mcpserver.server.WeatherService;
 
 @Configuration
 public class McpServerConfig {
@@ -32,7 +33,7 @@ public class McpServerConfig {
 	@Bean
 	@ConditionalOnProperty(prefix = "transport", name = "mode", havingValue = "sse")
 	public WebFluxSseServerTransport sseServerTransport() {
-		return new WebFluxSseServerTransport(new ObjectMapper(), "/mcp/message");
+		return new WebFluxSseServerTransport(new ObjectMapper(), "/mcp/message/");
 	}
     
     // Default transport if no specific transport mode is configured
@@ -41,7 +42,7 @@ public class McpServerConfig {
     public ServerMcpTransport defaultServerTransport() {
         // You can choose which transport to use as default
         // return new StdioServerTransport();
-        return new WebFluxSseServerTransport(new ObjectMapper(), "/mcp/message");
+        return new WebFluxSseServerTransport(new ObjectMapper(), "/mcp/message/");
     }
 
 	// Router function for SSE transport used by Spring WebFlux to start an HTTP
@@ -53,12 +54,17 @@ public class McpServerConfig {
 	}
 
 	@Bean
-	public WeatherApiClient weatherApiClient() {
-		return new WeatherApiClient();
+	public WeatherService weatherApiClient() {
+		return new WeatherService();
+	}
+
+    @Bean
+	public DBpediaService knowledgeApiClient() {
+		return new DBpediaService();
 	}
 
 	@Bean
-	public McpSyncServer mcpServer(ServerMcpTransport transport, WeatherApiClient weatherApiClient) { // @formatter:off
+	public McpSyncServer mcpWeatherServer(ServerMcpTransport transport, WeatherService weatherApiClient) { // @formatter:off
 
 		// Configure server capabilities with resource support
 		var capabilities = McpSchema.ServerCapabilities.builder()
@@ -71,6 +77,26 @@ public class McpServerConfig {
 			.serverInfo("MCP Demo Weather Server", "1.0.0")
 			.capabilities(capabilities)
 			.tools(McpToolUtils.toSyncToolRegistration(ToolCallbacks.from(weatherApiClient))) // Add @Tools
+			.build();
+		
+		return server; // @formatter:on
+	} // @formatter:on
+
+
+    @Bean
+	public McpSyncServer mcpKnowledgeServer(ServerMcpTransport transport, DBpediaService knowledgeApiClient) { // @formatter:off
+
+		// Configure server capabilities with resource support
+		var capabilities = McpSchema.ServerCapabilities.builder()
+			.tools(true) // Tool support with list changes notifications
+			.logging() // Logging support
+			.build();
+
+		// Create the server with both tool and resource capabilities
+		McpSyncServer server = McpServer.sync(transport)
+			.serverInfo("MCP Knowledge Server", "1.0.0")
+			.capabilities(capabilities)
+			.tools(McpToolUtils.toSyncToolRegistration(ToolCallbacks.from(knowledgeApiClient))) // Add @Tools
 			.build();
 		
 		return server; // @formatter:on

@@ -1,4 +1,4 @@
-package net.kaduk.kb.MCPKBDemo;
+package net.kaduk.kb.mcpserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

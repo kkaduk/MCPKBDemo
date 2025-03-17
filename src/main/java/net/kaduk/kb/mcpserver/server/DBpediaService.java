@@ -13,24 +13,14 @@ import org.springframework.ai.tool.annotation.Tool;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class DBpediaClient2 {
+// @Service
+public class DBpediaService {
 
     private static final String ENDPOINT_URL = "http://dbpedia.org/sparql";
-    
-    // Increasing timeouts for DBpedia which can be slow
-    private static final int CONNECT_TIMEOUT_MS = 30000;  // 30 seconds
-    private static final int READ_TIMEOUT_MS = 60000;     // 60 seconds
     private static final int QUERY_TIMEOUT_MS = 60000;    // 60 seconds
 
-    // static {
-    //     // Set global HTTP client settings for Jena
-    //     HttpEnv.setUserAgent("DBpediaClientJena/1.0 (application/research)");
-    //     HttpEnv.setConnectTimeout(Duration.ofMillis(CONNECT_TIMEOUT_MS));
-    //     HttpEnv.setReadTimeout(Duration.ofMillis(READ_TIMEOUT_MS));
-    // }
-
     public static void main(String[] args) {
-        DBpediaClient2 client = new DBpediaClient2();
+        DBpediaService client = new DBpediaService();
         System.out.println(client.getEntityInfo("Berlin"));
         System.out.println(client.findRelatedEntities("Albert_Einstein", 5));
         System.out.println(client.searchByCategory("Nobel_Prize_winners", 3));
@@ -222,16 +212,17 @@ public class DBpediaClient2 {
 
     private <T> List<T> executeQuery(String queryString, ResultSetMapper<T> mapper) {
         try {
-            // Create and configure the query execution with increased timeout
+            // Set default HTTP headers for all SPARQL requests
+            // HttpEnv.setUserAgent("DBpediaClientJena/1.0 (application/research)");
+            
+            // Create and configure the query execution
             QueryExecution qe = QueryExecution.service(ENDPOINT_URL)
                 .query(QueryFactory.create(queryString))
-                .timeout(QUERY_TIMEOUT_MS)  // SPARQL query timeout
+                .timeout( QUERY_TIMEOUT_MS)
                 .build();
             
             try (qe) {
-                System.out.println("Executing SPARQL query...");
                 ResultSet results = qe.execSelect();
-                System.out.println("Query executed successfully");
                 return mapper.map(results);
             }
         } catch (Exception e) {
