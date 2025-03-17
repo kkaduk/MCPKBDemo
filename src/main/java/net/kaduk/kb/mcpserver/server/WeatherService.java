@@ -6,13 +6,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// @Service
+@Service
 public class WeatherService {
 
 	private static final String BASE_URL = "https://api.weather.gov";

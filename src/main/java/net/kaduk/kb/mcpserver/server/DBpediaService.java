@@ -9,11 +9,12 @@ import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// @Service
+@Service
 public class DBpediaService {
 
     private static final String ENDPOINT_URL = "http://dbpedia.org/sparql";

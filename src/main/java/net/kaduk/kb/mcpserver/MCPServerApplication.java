@@ -1,8 +1,16 @@
 package net.kaduk.kb.mcpserver;
 
 
+import org.springframework.ai.tool.ToolCallback;
+import org.springframework.ai.tool.ToolCallbackProvider;
+import org.springframework.ai.tool.function.FunctionToolCallback;
+import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import net.kaduk.kb.mcpserver.server.DBpediaService;
+import net.kaduk.kb.mcpserver.server.WeatherService;
 
 @SpringBootApplication
 public class MCPServerApplication {
@@ -11,23 +19,23 @@ public class MCPServerApplication {
         SpringApplication.run(MCPServerApplication.class, args);
     }
 
-    // @Bean
-	// public ToolCallbackProvider weatherTools(WeatherService weatherService) {
-	// 	return MethodToolCallbackProvider.builder().toolObjects(weatherService).build();
-	// }
+    @Bean
+	public ToolCallbackProvider weatherTools(WeatherService weatherService) {
+		return MethodToolCallbackProvider.builder().toolObjects(weatherService).build();
+	}
 
-    // @Bean
-	// public ToolCallbackProvider knowledgeTools(DBpediaService knowledgeService) {
-	// 	return MethodToolCallbackProvider.builder().toolObjects(knowledgeService).build();
-	// }
-	// public record TextInput(String input) {
-	// }
+    @Bean
+	public ToolCallbackProvider knowledgeTools(DBpediaService knowledgeService) {
+		return MethodToolCallbackProvider.builder().toolObjects(knowledgeService).build();
+	}
+	public record TextInput(String input) {
+	}
 
-	// @Bean
-	// public ToolCallback toUpperCase() {
-	// 	return FunctionToolCallback.builder("toUpperCase", (TextInput input) -> input.input().toUpperCase())
-	// 		.inputType(TextInput.class)
-	// 		.description("Put the text to upper case")
-	// 		.build();
-	// }
+	@Bean
+	public ToolCallback toUpperCase() {
+		return FunctionToolCallback.builder("toUpperCase", (TextInput input) -> input.input().toUpperCase())
+			.inputType(TextInput.class)
+			.description("Put the text to upper case")
+			.build();
+	}
 }
