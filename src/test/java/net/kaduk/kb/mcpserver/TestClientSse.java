@@ -8,6 +8,7 @@ public class TestClientSse {
         var transport = new WebFluxSseClientTransport(WebClient.builder().baseUrl("http://localhost:8080"));
 
         new SampleClient(transport).run();
+
     }
 
 }

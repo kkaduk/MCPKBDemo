@@ -1,5 +1,7 @@
 package net.kaduk.kb.mcpserver;
 
+import java.time.Duration;
+
 /*
 * Copyright 2024 - 2024 the original author or authors.
 *
@@ -38,7 +40,7 @@ public class SampleClient {
 
 	public void run() {
 
-		var client = McpClient.sync(this.transport).build();
+		var client = McpClient.sync(this.transport).requestTimeout(Duration.ofSeconds(600)).build();
 
 		client.initialize();
 
@@ -57,6 +59,18 @@ public class SampleClient {
 		CallToolResult alertResult = client.callTool(new CallToolRequest("getAlerts", Map.of("state", "NY")));
         System.out.println("=============================");
 		System.out.println("Alert Response = " + alertResult);
+
+	
+		CallToolResult entityLiResult = client.callTool(new CallToolRequest("findRelatedEntities", Map.of("Albert_Einstein", 5)));
+		System.out.println("=============================Knowledge======");
+		System.out.println("Enity list = " + entityLiResult);
+
+		CallToolResult entityInfo = client.callTool(new CallToolRequest("getEntityInfo", Map.of("Berlin", "")));
+		System.out.println("=============================Knowledge======");
+		System.out.println("Enity Info = " + entityInfo.toString());
+
+
+
 
 		client.closeGracefully();
 

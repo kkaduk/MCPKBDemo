@@ -22,7 +22,7 @@ public class DBpediaService {
 
     public static void main(String[] args) {
         DBpediaService client = new DBpediaService();
-        System.out.println(client.getEntityInfo("Berlin"));
+        System.out.println(client.getEntityInfo("Berlin", "placeholder"));
         System.out.println(client.findRelatedEntities("Albert_Einstein", 5));
         System.out.println(client.searchByCategory("Nobel_Prize_winners", 3));
     }
@@ -60,7 +60,7 @@ public class DBpediaService {
      * @return Information about the entity
      */
     @Tool(description = "Get information about a specific entity from DBpedia")
-    public String getEntityInfo(String entityName) {
+    public String getEntityInfo(String entityName, String xxx) {
         String query = String.format("""
                 PREFIX dbo: <http://dbpedia.org/ontology/>
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -219,7 +219,7 @@ public class DBpediaService {
             // Create and configure the query execution
             QueryExecution qe = QueryExecution.service(ENDPOINT_URL)
                 .query(QueryFactory.create(queryString))
-                .timeout( QUERY_TIMEOUT_MS)
+                .timeout(QUERY_TIMEOUT_MS)
                 .build();
             
             try (qe) {
