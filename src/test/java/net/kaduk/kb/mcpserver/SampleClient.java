@@ -1,23 +1,6 @@
 package net.kaduk.kb.mcpserver;
 
 import java.time.Duration;
-
-/*
-* Copyright 2024 - 2024 the original author or authors.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* https://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
 import java.util.Map;
 
 import io.modelcontextprotocol.client.McpClient;
@@ -61,11 +44,11 @@ public class SampleClient {
 		System.out.println("Alert Response = " + alertResult);
 
 	
-		CallToolResult entityLiResult = client.callTool(new CallToolRequest("findRelatedEntities", Map.of("Albert_Einstein", 5)));
+		CallToolResult entityLiResult = client.callTool(new CallToolRequest("findRelatedEntities", Map.of("entityName", "Albert_Einstein", "limit", 5)));
 		System.out.println("=============================Knowledge======");
 		System.out.println("Enity list = " + entityLiResult);
 
-		CallToolResult entityInfo = client.callTool(new CallToolRequest("getEntityInfo", Map.of("Berlin", "")));
+		CallToolResult entityInfo = client.callTool(new CallToolRequest("getEntityInfo", Map.of("entityName", "Berlin")));
 		System.out.println("=============================Knowledge======");
 		System.out.println("Enity Info = " + entityInfo.toString());
 
